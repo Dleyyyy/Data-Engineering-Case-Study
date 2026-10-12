@@ -144,4 +144,4 @@ Data quality is enforced using native `dbt test` definitions (e.g., `not_null`, 
 
 ### Business Questions
 The complete SQL queries and result tables for the 10 case study business questions have been documented separately to keep this README concise.
-[View the Business Questions & SQL Outputs here](business_questions.md)
+[View the Business Questions & SQL Outputs here](BusinessQuestions.md)
