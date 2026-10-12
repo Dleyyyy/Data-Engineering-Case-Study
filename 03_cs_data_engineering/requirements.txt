@@ -2,3 +2,4 @@ duckdb
 kagglehub
 python-dotenv
 apache-airflow
+dbt-postgres

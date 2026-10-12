@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: sales
+    schema: sales
+    tables:
+      - name: customers
+      - name: invoices
+      - name: invoicelines
+      - name: customercategories
+      - name: buyinggroups
+      - name: orders
+      - name: orderlines
+      
+  - name: application
+    schema: application
+    tables:
+      - name: cities
+      - name: stateprovinces
+      - name: countries
+      - name: people
+
+  - name: warehouse
+    schema: warehouse
+    tables:
+      - name: stockitems
+      - name: colors
+      - name: packagetypes
+
+  

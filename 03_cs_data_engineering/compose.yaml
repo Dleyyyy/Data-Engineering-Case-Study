@@ -1,6 +1,6 @@
 x-airflow-common:
   &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.5.0}
+  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.5.0-python3.10}
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -9,7 +9,7 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    _PIP_ADDITIONAL_REQUIREMENTS: 'duckdb kagglehub python-dotenv'
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
@@ -143,7 +143,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./dags/init.sql:/docker-entrypoint-initdb.d/init.sql
       - casestudy_postgres_data:/var/lib/postgresql/data
       
     healthcheck:
