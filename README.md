@@ -7,6 +7,10 @@
 *   **Learning & Architecture:** Because building this pipeline involved tools and frameworks that were completely new to me, I utilized AI as a technical mentor to help me understand core concepts and guide my architectural decisions.
 *   **Debugging & Best Practices:** I leveraged AI to learn industry best practices and troubleshoot unfamiliar errors. This guided approach allowed me to understand the mechanics behind the bugs so I could eventually write the solutions and fix the pipeline independently.
 
+## Acknowledgements & Sources
+*   **Dataset:** The raw CSV data was sourced from [Kaggle: Wide World Importers CSV dataset](https://www.kaggle.com/datasets/pauloviniciusornelas/wwimporters).
+*   **Schema Documentation:** The database architecture and business rules were referenced from the official [Microsoft WideWorldImporters OLTP catalog](https://learn.microsoft.com/en-us/sql/samples/wide-world-importers-oltp-database-catalog) and [OLAP catalog](https://learn.microsoft.com/en-us/sql/samples/wide-world-importers-dw-database-catalog).
+
 ## Solution Overview
 This repository contains an end-to-end ELT (Extract, Load, Transform) data pipeline for Wide World Importers (WWI), a fictional wholesale distributor. The pipeline extracts raw operational CSV data dynamically using Kagglehub, loads it into a normalized OLTP PostgreSQL database via DuckDB, and transforms it into an analytics-ready dimensional model (OLAP star schema) using dbt. The entire workflow is orchestrated via Apache Airflow.
 
@@ -118,6 +122,10 @@ The pipeline is fully idempotent.
 **4. Known Assumptions and Limitations**
 *   **Missing Dates:** Null receipt and delivery dates are permitted in the OLTP schema, as real-world logistics assume not all orders are finalized immediately.
 *   **Baseline Snapshot Dates:** The initial dbt snapshot for `dim_customer` is artificially backdated to `1900-01-01` to ensure historical Kaggle transactions (2013-2016) successfully resolve to a valid surrogate key.
+*   **SCD Type 2 Demonstration:** Because the Kaggle dataset is a static historical extract, demonstrating SCD Type 2 requires a simulated update. After the initial pipeline run, users can manually trigger a downstream SQL update script to alter a customer's `CustomerCategory` in the OLTP database, followed by a second Airflow DAG run to observe dbt capturing the historical snapshot.
+
+**5. How does your pipeline handle data-quality failures?**
+Data quality is enforced using native `dbt test` definitions (e.g., `not_null`, `unique`, and relational integrity tests). I have configured the pipeline with a "fail clearly" behavior. If any critical data quality test fails during the transformation phase, the Airflow task will immediately fail and halt downstream execution. This prevents corrupted or orphaned analytics records from reaching the final presentation layer.
 
 ---
 
@@ -133,4 +141,7 @@ The pipeline is fully idempotent.
 
 ![OLAP Database Schema](<WWI olap.png>)
 
-### Business Questions & SQL Outputs
+
+### Business Questions
+The complete SQL queries and result tables for the 10 case study business questions have been documented separately to keep this README concise.
+[View the Business Questions & SQL Outputs here](business_questions.md)
